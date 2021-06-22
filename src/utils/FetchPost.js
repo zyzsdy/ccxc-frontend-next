@@ -9,18 +9,26 @@ function hmac_sha1(text, pass) {
     return res;
 }
 
-export function fetchPost(url, data){
+export async function fetchPost(url, data){
     let dataBody = JSON.stringify(data);
-    return fetch(url, {
-        method: 'POST',
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: dataBody
-    });
+    try {
+        return await fetch(url, {
+            method: 'POST',
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: dataBody
+        });
+    } catch (err) {
+        gConst.globalBus.emit("message", {
+            type: "danger",
+            message: "服务器通信异常"
+        });
+        throw err;
+    }
 }
 
-export function fetchPostWithSign(url, data) {
+export async function fetchPostWithSign(url, data) {
     let token = localStorage.getItem("token") || "";
     let ts = Date.now();
     let dataBody = JSON.stringify(data);
@@ -29,15 +37,24 @@ export function fetchPostWithSign(url, data) {
     let sk = localStorage.getItem("sk") || "";
     let sign = hmac_sha1(unsignedString, sk);
 
-    return fetch(url, {
-        method: 'POST',
-        headers: {
-            "Content-Type": "application/json",
-            "User-Token": token,
-            "X-Auth-Token": `Ccxc-Auth ${ts} ${sign}`
-        },
-        body: dataBody
-    });
+    try {
+        return await fetch(url, {
+            method: 'POST',
+            headers: {
+                "Content-Type": "application/json",
+                "User-Token": token,
+                "X-Auth-Token": `Ccxc-Auth ${ts} ${sign}`
+            },
+            body: dataBody
+        });
+    } catch (err) {
+        gConst.globalBus.emit("message", {
+            type: "danger",
+            message: "服务器通信异常"
+        });
+        throw err;
+    }
+    
 }
 
 export function defaultApiErrorAction(data) {

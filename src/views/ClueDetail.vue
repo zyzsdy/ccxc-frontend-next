@@ -43,7 +43,7 @@
 </style>
 
 <script setup>
-import { nextTick, onMounted, reactive, ref } from '@vue/runtime-core'
+import { nextTick, onMounted, onUnmounted, reactive, ref } from '@vue/runtime-core'
 import isLogin from '../utils/IsLogin'
 import { useRoute, useRouter } from "vue-router";
 import gConst from '../globalconst';
@@ -74,6 +74,10 @@ onMounted(async () => {
     }
 
     await loadPuzzleDetail();
+});
+
+onUnmounted(() => {
+    gConst.status.fromRoomStatus = 0;
 });
 
 async function loadPuzzleDetail() {

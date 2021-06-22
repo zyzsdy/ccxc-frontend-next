@@ -23,6 +23,7 @@ async function loginCheck(ticket) {
 
     if (data["status"] == 1) {
         gConst.status.isLogin = true;
+        gConst.status.username = data["user_login_info"]["username"];
         router.push('/prologue');
 
         localStorage.setItem("uid", data["user_login_info"]["uid"]);

@@ -159,6 +159,7 @@ async function reloadClueMatrix() {
 }
 
 function showPuzzle(pid) {
+    gConst.status.fromRoomStatus = 1;
     router.push(`/clue/${pid}`);
 }
 </script>

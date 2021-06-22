@@ -13,7 +13,7 @@
     font-size: 10px;
     color: #999999;
     background-color: #2f2f2f;
-    min-height: 50px;
+    height: 100px;
 }
 .nav-footer a{
     color: #c3cae7;

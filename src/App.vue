@@ -1,5 +1,7 @@
 <template>
+  <BottomBar></BottomBar>
   <Modal></Modal>
+  <MessageToasts></MessageToasts>
   <div class="app-main-view">
     <router-view></router-view>
   </div>
@@ -9,10 +11,14 @@
 <script setup>
 import gConst from './globalconst'
 import Modal from './components/Modal.vue'
+import MessageToasts from './components/MessageToasts.vue'
 import BottomFooter from './components/BottomFooter.vue'
+import BottomBar from './components/BottomBar.vue'
 
 console.log("CCXC Engine v1.1 created by Ted Zyzsdy, supported by MeowSound Idols.");
 gConst.status.isLogin = localStorage.getItem("token") == null;
+gConst.status.username = localStorage.getItem("username") || "[][NULL]";
+gConst.status.skipPrologue = localStorage.getItem("skipPrologue") == "on";
 
 </script>
 
