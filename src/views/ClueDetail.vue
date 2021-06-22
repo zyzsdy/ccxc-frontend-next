@@ -3,6 +3,7 @@
         <div class="row header-line">
             <div class="col">
                 <div>CCBC 11</div>
+                <h4 class="title-line"># {{ puzzle.title }}</h4>
             </div>
         </div>
         <div class="row">
@@ -22,7 +23,7 @@
         <div class="row">
             <div class="col">
                 <div v-if="puzzle.type == 0">
-                    <img class="puzzle-image" :src="puzzle.image">
+                    <a :href="puzzle.image" target="_blank"><img class="puzzle-image" :src="puzzle.image"></a>
                 </div>
                 <div v-if="puzzle.type == 1" v-html="puzzle.html" id="puzzleHtml">
 
@@ -35,6 +36,9 @@
 <style lang="scss" scoped>
 .puzzle-image{
     width: 100%;
+}
+.title-line{
+    margin-top: 1.2rem;
 }
 </style>
 

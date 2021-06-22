@@ -1,11 +1,15 @@
 <template>
   <Modal></Modal>
-  <router-view></router-view>
+  <div class="app-main-view">
+    <router-view></router-view>
+  </div>
+  <BottomFooter></BottomFooter>
 </template>
 
 <script setup>
 import gConst from './globalconst'
 import Modal from './components/Modal.vue'
+import BottomFooter from './components/BottomFooter.vue'
 
 console.log("CCXC Engine v1.1 created by Ted Zyzsdy, supported by MeowSound Idols.");
 gConst.status.isLogin = localStorage.getItem("token") == null;
@@ -26,5 +30,8 @@ body{
 .header-line{
     margin-top: 60px;
     margin-bottom: 150px;
+}
+.app-main-view{
+  min-height: 120vh;
 }
 </style>
