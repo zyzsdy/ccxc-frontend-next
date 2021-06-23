@@ -77,7 +77,7 @@ onMounted(async () => {
 });
 
 onUnmounted(() => {
-    gConst.status.fromRoomStatus = 0;
+    gConst.status.navLinkType = "";
 });
 
 async function loadPuzzleDetail() {
@@ -92,6 +92,13 @@ async function loadPuzzleDetail() {
     if (data['status'] == 1) {
         if (data.puzzle) {
             Object.assign(puzzle, data.puzzle);
+
+            if (puzzle.answer_type == 0) {
+                gConst.status.navLinkType = "an";
+            }
+            else if (puzzle.answer_type == 1) {
+                gConst.status.navLinkType = "of";
+            }
 
             if (puzzle.content) renderedHtml.value = marked(puzzle.content);
             if (puzzle.extend_content) renderedExtendHtml.value = marked(puzzle.extend_content);

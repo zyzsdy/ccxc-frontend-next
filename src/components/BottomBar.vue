@@ -24,8 +24,8 @@
                             </li>
                         </ul>
                     </li>
-                    <li class="nav-item" v-if="gConst.status.fromRoomStatus == 1"><a class="nav-link" href="#" @click="goAnalysisRoom">案情分析室</a></li>
-                    <li class="nav-item" v-if="gConst.status.fromRoomStatus == 2"><a class="nav-link" href="#">警官办公室</a></li>
+                    <li class="nav-item" v-if="gConst.status.navLinkType === 'an'"><a class="nav-link" href="#" @click="goAnalysisRoom">案情分析室</a></li>
+                    <li class="nav-item" v-if="gConst.status.navLinkType === 'of'"><a class="nav-link" href="#">警官办公室</a></li>
                     <li class="nav-item" v-if="route.path.indexOf('clue') != -1"><a class="nav-link" href="#">显示提示</a></li>
                     <li class="nav-item" v-if="route.path.indexOf('clue') != -1"><a class="nav-link" href="#">答题记录</a></li>
                 </ul>
@@ -54,6 +54,7 @@ const route = useRoute();
 const router = useRouter();
 
 const skipPrologue = ref(false);
+
 
 onMounted(() => {
     skipPrologue.value = gConst.status.skipPrologue;

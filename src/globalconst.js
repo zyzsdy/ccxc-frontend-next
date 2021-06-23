@@ -8,8 +8,8 @@ const gConst = {
     status: reactive({
         isLogin: false,
         username: "[][NULL]",
-        fromRoomStatus: 0, //0-不显示 1-线索室 2-警长室
-        skipPrologue: false
+        skipPrologue: false,
+        navLinkType: "", //当前导航跳转链接 an-显示返回案情分析室按钮 of-显示返回警官办公室按钮
     })
 }
 
