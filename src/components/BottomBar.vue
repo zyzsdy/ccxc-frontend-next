@@ -26,14 +26,14 @@
                     </li>
                     <li class="nav-item" v-if="gConst.status.navLinkType === 'an'"><a class="nav-link" href="#" @click="goAnalysisRoom">案情分析室</a></li>
                     <li class="nav-item" v-if="gConst.status.navLinkType === 'of'"><a class="nav-link" href="#">警官办公室</a></li>
-                    <li class="nav-item" v-if="route.path.indexOf('clue') != -1"><a class="nav-link" href="#">显示提示</a></li>
-                    <li class="nav-item" v-if="route.path.indexOf('clue') != -1"><a class="nav-link" href="#">答题记录</a></li>
+                    <li class="nav-item" v-if="route.path.indexOf('clue') != -1"><a class="nav-link" href="#" @click="showTip">显示提示</a></li>
+                    <li class="nav-item" v-if="route.path.indexOf('clue') != -1"><a class="nav-link" href="#" @click="showAnswerHistory">答题记录</a></li>
                 </ul>
                 <ul class="navbar-nav"  v-if="route.path.indexOf('clue') != -1">
-                    <form class="d-flex">
-                        <input class="form-control me-2 mb-2 mb-md-0" type="input" placeholder="Answer" aria-label="Answer">
+                    <form class="d-flex" @submit.prevent="sendAnswer">
+                        <input class="form-control me-2 mb-2 mb-md-0 bg-dark text-light" type="input" placeholder="Answer" aria-label="Answer" v-model="answer">
                     </form>
-                    <li class="nav-item me-2"><button class="btn btn-outline-success">提交</button></li>
+                    <li class="nav-item me-2"><button class="btn btn-outline-success" @click="sendAnswer">提交</button></li>
                 </ul>
             </div>
         </div>
@@ -54,11 +54,55 @@ const route = useRoute();
 const router = useRouter();
 
 const skipPrologue = ref(false);
+const answer = ref("");
 
 
 onMounted(() => {
     skipPrologue.value = gConst.status.skipPrologue;
-})
+});
+
+function sendAnswer() {
+    let answerString = answer.value;
+    let pid = route.params.pid;
+    if (!pid) {
+        gConst.status.emit("message", {
+            type: "info",
+            message: "题目ID不正确"
+        });
+        return;
+    }
+
+    console.log(pid, answerString);
+
+
+    answer.value = "";
+}
+
+function showTip() {
+    let pid = route.params.pid;
+    if (!pid) {
+        gConst.status.emit("message", {
+            type: "info",
+            message: "题目ID不正确"
+        });
+        return;
+    }
+
+    console.log("showTip Clicked");
+}
+
+function showAnswerHistory() {
+    let pid = route.params.pid;
+    if (!pid) {
+        gConst.status.emit("message", {
+            type: "info",
+            message: "题目ID不正确"
+        });
+        return;
+    }
+
+    console.log("showAnswerHistory Clicked");
+}
 
 function checkSkipSwitcher() {
     if (skipPrologue.value == false) {
