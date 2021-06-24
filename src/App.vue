@@ -3,7 +3,7 @@
   <Modal></Modal>
   <MessageToasts></MessageToasts>
   <div class="app-main-view">
-    <router-view></router-view>
+    <router-view v-if="isRouterVisible"></router-view>
   </div>
   <BottomFooter></BottomFooter>
 </template>
@@ -14,11 +14,22 @@ import Modal from './components/Modal.vue'
 import MessageToasts from './components/MessageToasts.vue'
 import BottomFooter from './components/BottomFooter.vue'
 import BottomBar from './components/BottomBar.vue'
+import { ref } from '@vue/reactivity'
+import { nextTick } from '@vue/runtime-core'
 
 console.log("CCXC Engine v1.1 created by Ted Zyzsdy, supported by MeowSound Idols.");
 gConst.status.isLogin = localStorage.getItem("token") == null;
 gConst.status.username = localStorage.getItem("username") || "[][NULL]";
 gConst.status.skipPrologue = localStorage.getItem("skipPrologue") == "on";
+
+const isRouterVisible = ref(true);
+
+gConst.globalBus.on("reload", () => {
+  isRouterVisible.value = false;
+  nextTick(() => {
+    isRouterVisible.value = true;
+  });
+});
 
 </script>
 

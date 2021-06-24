@@ -75,6 +75,39 @@
             </div>
         </div>
     </div>
+    <div class="modal fade" id="answerHistory" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="answerHistoryDialogHeader" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-fullscreen-md-down modal-lg">
+            <div class="modal-content bg-dark text-light">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="answerHistoryDialogHeader">答案记录</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <table class="table table-dark">
+                        <thead>
+                            <tr>
+                                <th scope="col">回答时间</th>
+                                <th scope="col">回答者</th>
+                                <th scope="col">答案</th>
+                                <th scope="col">状态</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="ah in answerHistory" :key="ah.id" :class="[ ah.rowClass ]">
+                                <td>{{ ah.dateString }}</td>
+                                <td>{{ ah.user_name }}</td>
+                                <td>{{ ah.answer }}</td>
+                                <td>{{ ah.statusLabel }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">关闭</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </template>
 
 <style lang="scss" scoped>
@@ -88,6 +121,7 @@ import { fetchPostWithSign, defaultApiErrorAction } from '../utils/FetchPost'
 import { ref } from '@vue/reactivity';
 import { onMounted } from '@vue/runtime-core';
 import { Modal } from 'bootstrap';
+import formatTimestamp from '../utils/FormatDate'
 
 const route = useRoute();
 const router = useRouter();
@@ -98,23 +132,70 @@ const answer = ref("");
 const answerTips = ref([]);
 const tipsCoin = ref(0.0);
 
+const answerHistory = ref([]);
+
+
+window.gbus = gConst.globalBus;
 
 onMounted(() => {
     skipPrologue.value = gConst.status.skipPrologue;
 });
 
-function sendAnswer() {
+async function sendAnswer() {
     let answerString = answer.value;
-    let pid = route.params.pid;
+
+    if (answerString == null || answerString == ""){
+        gConst.globalBus.emit("message", {
+            type: "danger",
+            message: "答案不能为空"
+        });
+        return;
+    }
+
+    let pid = parseInt(route.params.pid);
     if (!pid) {
-        gConst.status.emit("message", {
+        gConst.globalBus.emit("message", {
             type: "info",
             message: "题目ID不正确"
         });
         return;
     }
 
-    console.log(pid, answerString);
+    let api = gConst.apiRoot + "/check-answer";
+    let res = await fetchPostWithSign(api, {
+        pid,
+        answer: answerString
+    });
+    let data = await res.json();
+
+    if (data['status'] == 1) {
+        //final正确，跳转到结束页面
+        if(data.answer_status == 1 && data.extend_flag == 1){
+            gConst.globalBus.emit("message", {
+                type: "success",
+                message: "回答正确！"
+            });
+            router.push('/finalend');
+            return;
+        }
+
+        let type = "warning";
+        if(data.answer_status == 1) type = "success";
+        else if(data.answer_status == 2) type = "danger";
+        else if(data.answer_status == 3) type = "info";
+
+        gConst.globalBus.emit("show-message", {
+            title: "答题结果",
+            type,
+            message: data.message
+        });
+
+        if(data.extend_flag == 16){
+            gConst.globalBus.emit("reload");
+        }
+    } else {
+        defaultApiErrorAction(data);
+    }
 
 
     answer.value = "";
@@ -123,7 +204,7 @@ function sendAnswer() {
 async function showTip() {
     let pid = parseInt(route.params.pid);
     if (!pid) {
-        gConst.status.emit("message", {
+        gConst.globalBus.emit("message", {
             type: "info",
             message: "题目ID不正确"
         });
@@ -139,7 +220,7 @@ async function showTip() {
 async function unlockTip(tip_num){
     let pid = parseInt(route.params.pid);
     if (!pid) {
-        gConst.status.emit("message", {
+        gConst.globalBus.emit("message", {
             type: "info",
             message: "题目ID不正确"
         });
@@ -177,17 +258,61 @@ async function reloadTip(pid){
     }
 }
 
-function showAnswerHistory() {
-    let pid = route.params.pid;
+async function showAnswerHistory() {
+    let pid = parseInt(route.params.pid);
     if (!pid) {
-        gConst.status.emit("message", {
+        gConst.globalBus.emit("message", {
             type: "info",
             message: "题目ID不正确"
         });
         return;
     }
 
-    console.log("showAnswerHistory Clicked");
+    let api = gConst.apiRoot + "/play/get-last-answer-log";
+    let res = await fetchPostWithSign(api, {
+        pid
+    });
+    let data = await res.json();
+
+    if (data['status'] == 1) {
+        if (data.answer_log) {
+            let answerLogList = [];
+            for (let ah of data.answer_log) {
+                ah.dateString = formatTimestamp(ah.create_time);
+                
+                let statusLabel = "";
+                let rowClass = "";
+                if (ah.status == 1) { 
+                    statusLabel = "OK";
+                    rowClass = "table-success";
+                }
+                else if (ah.status == 2) {
+                    statusLabel = "WRONG ANSWER";
+                    rowClass = "table-danger";
+                }
+                else if (ah.status == 3) {
+                    statusLabel = "COOL DOWN";
+                    rowClass = "table-info";
+                }
+                else if (ah.status == 6) {
+                    statusLabel = "HIT KEYWORD";
+                    rowClass = "table-warning";
+                }
+
+                ah.statusLabel = statusLabel;
+                ah.rowClass = rowClass;
+
+                answerLogList.push(ah);
+            }
+
+            answerHistory.value = answerLogList;
+
+            var answerHistoryDialog = new Modal(document.getElementById("answerHistory"));
+            answerHistoryDialog.show();
+        }
+    } else {
+        defaultApiErrorAction(data);
+    }
 }
 
 function checkSkipSwitcher() {
