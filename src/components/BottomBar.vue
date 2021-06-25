@@ -10,7 +10,8 @@
                 <ul class="navbar-nav mb-2 me-auto mb-md-0">
                     <li class="nav-item dropup">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        导航
+                            导航
+                            <span class="badge bg-danger" v-if="unreadAnnouncement > 0">{{ unreadAnnouncement }}</span>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDropdown">
                             <li><a class="dropdown-item" href="#" @click="goCorridor">前往走廊</a></li>
@@ -22,6 +23,8 @@
                                     <label class="form-check-label" for="autoSkipPrologue">进入时跳过序章</label>
                                 </div>
                             </li>
+                            <li v-if="unreadAnnouncement > 0"><hr class="dropdown-divider"></li>
+                            <li class="bg-danger" v-if="unreadAnnouncement > 0"><a class="dropdown-item" href="https://ccbc11.cipherpuzzles.com/announcement" target="_blank">新公告 {{ unreadAnnouncement }} 条未读</a></li>
                         </ul>
                     </li>
                     <li class="nav-item" v-if="gConst.status.navLinkType === 'an'"><a class="nav-link" href="#" @click="goAnalysisRoom">案情分析室</a></li>
@@ -83,7 +86,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <table class="table table-dark">
+                    <table class="table table-dark" v-if="answerHistory.length > 0">
                         <thead>
                             <tr>
                                 <th scope="col">回答时间</th>
@@ -101,10 +104,22 @@
                             </tr>
                         </tbody>
                     </table>
+                    <div v-else>还没有回答过这道题。</div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">关闭</button>
                 </div>
+            </div>
+        </div>
+    </div>
+    <div class="toast-container position-fixed p-3 top-0 end-0">
+        <div id="coolDownToast" class="toast align-items-center text-white bg-primary border-0" role="alert" aria-live="assertive" aria-atomic="true"
+            data-bs-autohide="false">
+            <div class="d-flex">
+                <div class="toast-body">
+                    冷却中，还有 {{ Math.ceil(cooldownRemainSeconds) }} 秒。
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
             </div>
         </div>
     </div>
@@ -120,8 +135,9 @@ import { useRoute, useRouter } from 'vue-router'
 import { fetchPostWithSign, defaultApiErrorAction } from '../utils/FetchPost'
 import { ref } from '@vue/reactivity';
 import { onMounted } from '@vue/runtime-core';
-import { Modal } from 'bootstrap';
+import { Modal, Toast } from 'bootstrap';
 import formatTimestamp from '../utils/FormatDate'
+import sleep from '../utils/Sleep'
 
 const route = useRoute();
 const router = useRouter();
@@ -134,12 +150,32 @@ const tipsCoin = ref(0.0);
 
 const answerHistory = ref([]);
 
+const unreadAnnouncement = ref(0);
 
-window.gbus = gConst.globalBus;
+const cooldownRemainSeconds = ref(0);
+
+
+sendHeartbeat();
+startCountdown();
 
 onMounted(() => {
     skipPrologue.value = gConst.status.skipPrologue;
 });
+
+async function sendHeartbeat(){
+    let api = gConst.apiRoot + "/heartbeat-puzzle";
+    let res = await fetchPostWithSign(api, {});
+    let data = await res.json();
+
+    if (data['status'] == 1) {
+        unreadAnnouncement.value = data.unread;
+    } else {
+        defaultApiErrorAction(data);
+    }
+
+    await sleep(60000);
+    sendHeartbeat();
+}
 
 async function sendAnswer() {
     let answerString = answer.value;
@@ -182,7 +218,11 @@ async function sendAnswer() {
         let type = "warning";
         if(data.answer_status == 1) type = "success";
         else if(data.answer_status == 2) type = "danger";
-        else if(data.answer_status == 3) type = "info";
+        else if(data.answer_status == 3) {
+            type = "info";
+            cooldownRemainSeconds.value = data.cooldown_remain_seconds;
+            showCooldownToast();
+        }
 
         gConst.globalBus.emit("show-message", {
             title: "答题结果",
@@ -313,6 +353,25 @@ async function showAnswerHistory() {
     } else {
         defaultApiErrorAction(data);
     }
+}
+
+function showCooldownToast() {
+    let toastEl = document.getElementById("coolDownToast");
+    let toast = new Toast(toastEl);
+    toast.show();
+}
+
+async function startCountdown() {
+    cooldownRemainSeconds.value -= 1;
+    await sleep(1000);
+
+    if (cooldownRemainSeconds.value <= 0) {
+        let toastEl = document.getElementById("coolDownToast");
+        let toast = new Toast(toastEl);
+        toast.hide();
+    }
+    
+    startCountdown();
 }
 
 function checkSkipSwitcher() {
