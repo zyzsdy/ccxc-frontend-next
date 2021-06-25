@@ -28,7 +28,7 @@
                         </ul>
                     </li>
                     <li class="nav-item" v-if="gConst.status.navLinkType === 'an'"><a class="nav-link" href="#" @click="goAnalysisRoom">案情分析室</a></li>
-                    <li class="nav-item" v-if="gConst.status.navLinkType === 'of'"><a class="nav-link" href="#">警官办公室</a></li>
+                    <li class="nav-item" v-if="gConst.status.navLinkType === 'of'"><a class="nav-link" href="#" @click="goCommOffice">警官办公室</a></li>
                     <li class="nav-item" v-if="route.path.indexOf('clue') != -1"><a class="nav-link" href="#" @click="showTip">显示提示</a></li>
                     <li class="nav-item" v-if="route.path.indexOf('clue') != -1"><a class="nav-link" href="#" @click="showAnswerHistory">答题记录</a></li>
                 </ul>
@@ -370,7 +370,7 @@ async function startCountdown() {
         let toast = new Toast(toastEl);
         toast.hide();
     }
-    
+
     startCountdown();
 }
 
@@ -392,7 +392,11 @@ function goCorridor() {
     router.push("/corridor");
 }
 
-function goAnalysisRoom(){
+function goAnalysisRoom() {
     router.push("/analysis-room");
+}
+
+function goCommOffice() {
+    router.push("/commissioner-office")
 }
 </script>
