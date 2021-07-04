@@ -120,4 +120,16 @@ async function loadPuzzleDetail() {
         defaultApiErrorAction(data);
     }
 }
+
+window["backendApi"] = async (path, req) => {
+    let api = gConst.apiRoot + path;
+    let res = await fetchPostWithSign(api, req);
+    let data = await res.json();
+
+    if (data["status"] == 1){
+        return data;
+    } else {
+        defaultApiErrorAction(data);
+    }
+}
 </script>

@@ -135,6 +135,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { fetchPostWithSign, defaultApiErrorAction } from '../utils/FetchPost'
 import { ref } from '@vue/reactivity';
 import { onMounted } from '@vue/runtime-core';
+import isLogin from '../utils/IsLogin'
 import { Modal, Toast } from 'bootstrap';
 import formatTimestamp from '../utils/FormatDate'
 import sleep from '../utils/Sleep'
@@ -163,17 +164,20 @@ onMounted(() => {
 });
 
 async function sendHeartbeat(){
-    let api = gConst.apiRoot + "/heartbeat-puzzle";
-    let res = await fetchPostWithSign(api, {});
-    let data = await res.json();
-
-    if (data['status'] == 1) {
-        unreadAnnouncement.value = data.unread;
-    } else {
-        defaultApiErrorAction(data);
-    }
-
     await sleep(60000);
+
+    if (isLogin()) {
+        let api = gConst.apiRoot + "/heartbeat-puzzle";
+        let res = await fetchPostWithSign(api, {});
+        let data = await res.json();
+
+        if (data['status'] == 1) {
+            unreadAnnouncement.value = data.unread;
+        } else {
+            defaultApiErrorAction(data);
+        }
+    }
+    
     sendHeartbeat();
 }
 
