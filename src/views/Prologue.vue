@@ -61,7 +61,7 @@ async function reloadPrologueHtml() {
 
 function goNext(){
     if (localStorage.getItem("prologue") === "o"){
-        router.push('/corridor');
+        router.push('/commissioner-office');
     } else {
         gConst.globalBus.emit("redirect-location", {
             message: "游戏存档状态不正确，请尝试重新登录。",

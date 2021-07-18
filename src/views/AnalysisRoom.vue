@@ -6,12 +6,12 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-lg-10 offset-lg-1 col-xl-8 offset-xl-2">
-                <div class="ratio ratio-board main-grid">
-                    <div class="container-fluid">
+            <div class="col">
+                <div class="ratio ratio-16x9 main-grid">
+                    <div class="container-fluid question-area">
                         <div class="row row-cols-8 main-grid-row" v-for="row in clueMatrix" :key="row.rowKey">
-                            <div class="col" v-for="col in row.l" :key="col.colKey">
-                                <div class="ratio ratio-1x1 sticker-box" v-if="col.show == 1" @click="showPuzzle(col.pid)">
+                            <div class="col p-0" v-for="col in row.l" :key="col.colKey">
+                                <div class="ratio ratio-4x3 sticker-box" v-if="col.show == 1" @click="showPuzzle(col.pid)">
                                     <div class="number-box" :class="{'number-box-finish' : col.finish}">{{ col.title }}</div>
                                 </div>
                             </div>
@@ -27,65 +27,72 @@
 @import "../node_modules/bootstrap/scss/functions";
 @import "../node_modules/bootstrap/scss/variables";
 @import "../node_modules/bootstrap/scss/mixins";
-.ratio-board{
-    --bs-aspect-ratio: calc(4 / 5 * 100%);
+.question-area{
+    position: absolute;
+    width: 57%;
+    height: 80%;
+    top: 10%;
+    left: 18.5%;
 }
 .main-grid{
-    background-image: url('../assets/board-bg.png');
-    border: 16px solid transparent;
-    border-image: url('../assets/border-bg.png') 18 stretch;
+    background-image: url('../assets/board.jpg');
+    background-size: 100% 100%;
 }
 .main-grid-row{
-    height: 82px;
+    height: 70px;
 }
 .sticker-box {
-    background-image: url('../assets/sticker.png');
+    background-image: url('../assets/question.png');
     background-size: 100% 100%;
     cursor: pointer;
+    transition: all 0.2s linear;
+}
+.sticker-box:hover{
+    background-image: url('../assets/question_hover.png');
 }
 .number-box{
     font-size: 45px;
-    margin-top: 10px;
-    color: rgb(56, 131, 243);
+    margin-top: 5px;
+    color: #2a1711;
 }
 .number-box-finish{
-    color: rgb(13, 196, 4);
+    color: #0ead00;
 }
 
 @include media-breakpoint-down(xxl) {
     .number-box{
-        font-size: 35px;
-        margin-top: 8px;
+        font-size: 40px;
+        margin-top: 3px;
     }
     .main-grid-row{
-        height: 71px;
+        height: 62px;
     }
 }
 @include media-breakpoint-down(xl) {
     .number-box{
-        font-size: 35px;
-        margin-top: 10px;
+        font-size: 30px;
+        margin-top: 5px;
     }
     .main-grid-row{
-        height: 74px;
+        height: 53px;
     }
 }
 @include media-breakpoint-down(lg) {
     .number-box{
-        font-size: 30px;
-        margin-top: 9px;
+        font-size: 25px;
+        margin-top: 2px;
     }
     .main-grid-row{
-        height: 67px;
+        height: 39px;
     }
 }
 @include media-breakpoint-down(md) {
     .number-box{
-        font-size: 3.5vw;
-        margin-top: 1vw;
+        font-size: 3vw;
+        margin-top: 0.4vw;
     }
     .main-grid-row{
-        height: 9.2vw;
+        height: 5.2vw;
     }
 }
 </style>

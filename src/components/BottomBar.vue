@@ -14,7 +14,8 @@
                             <span class="badge bg-danger" v-if="unreadAnnouncement > 0">{{ unreadAnnouncement }}</span>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDropdown">
-                            <li><a class="dropdown-item" href="#" @click="goCorridor">前往走廊</a></li>
+                            <li><a class="dropdown-item" href="#" @click="goCommOffice">前往警官办公室</a></li>
+                            <li><a class="dropdown-item" href="#" @click="goAnalysisRoom">前往案情分析室</a></li>
                             <li><a class="dropdown-item" href="#" @click="goPrologue">前往序章</a></li>
                             <li><hr class="dropdown-divider"></li>
                             <li>

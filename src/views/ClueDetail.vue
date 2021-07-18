@@ -96,7 +96,7 @@ async function loadPuzzleDetail() {
             if (puzzle.answer_type == 0) {
                 gConst.status.navLinkType = "an";
             }
-            else if (puzzle.answer_type == 1) {
+            else if (puzzle.answer_type == 1 || puzzle.answer_type == 2 || puzzle.answer_type == 3) {
                 gConst.status.navLinkType = "of";
             }
 
