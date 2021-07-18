@@ -39,7 +39,7 @@ onMounted(async () => {
 
     //当localStorage("skipPrologue")值为on时跳过Prologue
     if (localStorage.getItem("prologue") === "o" && localStorage.getItem("skipPrologue") === "on") {
-        router.push('/corridor');
+        router.push('/commissioner-office');
         return;
     }
     
