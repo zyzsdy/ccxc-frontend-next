@@ -56,7 +56,7 @@
     color: #2a1711;
 }
 .number-box-finish{
-    color: #0ead00;
+    color: #656e00;
 }
 
 @include media-breakpoint-down(xxl) {

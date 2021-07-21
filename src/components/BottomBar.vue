@@ -63,7 +63,7 @@
                                 </div><div>
                                 <button v-if="tip.is_open == 0" class="btn btn-secondary" @click="unlockTip(tip.tip_num)">解锁</button></div>
                             </div>
-                            <div>{{tip.content}}</div>
+                            <div v-html="tip.content_html"></div>
                         </div>
                         <div v-if="answerTips.length == 0">
                             暂时没有提示，说不定过一段时间回来看看会有。
@@ -140,6 +140,7 @@ import isLogin from '../utils/IsLogin'
 import { Modal, Toast } from 'bootstrap';
 import formatTimestamp from '../utils/FormatDate'
 import sleep from '../utils/Sleep'
+import marked from 'marked'
 
 const route = useRoute();
 const router = useRouter();
@@ -295,6 +296,13 @@ async function reloadTip(pid){
 
     if (data['status'] == 1) {
         if (data.puzzle_tips) {
+            for (let pti in data.puzzle_tips) {
+                data.puzzle_tips[pti].content_html = "";
+                if (data.puzzle_tips[pti].content && data.puzzle_tips[pti].content.length > 0) {
+                    data.puzzle_tips[pti].content_html = marked(data.puzzle_tips[pti].content);
+                }
+            }
+
             answerTips.value = data.puzzle_tips
         }
         tipsCoin.value = data.tips_coin;

@@ -49,16 +49,16 @@
     color: #2a1711;
 }
 .meta-button:hover{
-    border-color: rgb(160,100,60);
-    background-color: rgba(204, 195, 187);
+    border-color: #a0643c;
+    background-color: rgb(204, 195, 187);
 }
 .mb-success{
-    background-color: rgba(70, 189, 62, 0.7);
-    border: #327e28 2px solid;
+    background-color: rgba(138, 128, 0, 0.7);
+    border: #44490e 2px solid;
 }
 .mb-success:hover{
-    background-color: rgba(70, 189, 62);
-    border-color: #24bd71;
+    background-color: rgb(138, 128, 0);
+    border-color: #656d10;
 }
 .mainimg{
     background-image: url("../assets/cobg.jpg");
@@ -67,8 +67,8 @@
 .buttonarea{
     position: absolute;
     width: 30%;
-    height: 28%;
-    top: 50%;
+    height: 20%;
+    top: 53%;
     left: 35%;
 }
 .metarow{
