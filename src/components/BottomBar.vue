@@ -15,7 +15,7 @@
                         </a>
                         <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDropdown">
                             <li><a class="dropdown-item" href="#" @click="goCommOffice">前往警官办公室</a></li>
-                            <li><a class="dropdown-item" href="#" @click="goAnalysisRoom">前往案情分析室</a></li>
+                            <li><a class="dropdown-item" href="#" @click="goAnalysisRoom">前往案情分析板</a></li>
                             <li><a class="dropdown-item" href="#" @click="goPrologue">前往序章</a></li>
                             <li><hr class="dropdown-divider"></li>
                             <li>
