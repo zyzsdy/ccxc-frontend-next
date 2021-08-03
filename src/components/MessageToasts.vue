@@ -1,5 +1,5 @@
 <template>
-    <div class="toast-container position-fixed p-3 top-0 start-50 translate-middle-x">
+    <div class="toast-container position-fixed p-3 top-0 start-50 translate-middle-x messagetoasts">
         <div class="toast align-items-center text-white border-0" :class="[ t.typeClass ]" role="alert" aria-live="assertive" aria-atomic="true" 
             v-for="t in toastList" :key="t.time" :id="'toast-' + t.time">
             <div class="d-flex">
@@ -11,6 +11,12 @@
         </div>
     </div>
 </template>
+
+<style lang="scss" scoped>
+.messagetoasts{
+    z-index: 2000;
+}
+</style>
 
 <script setup>
 import { ref } from '@vue/reactivity';

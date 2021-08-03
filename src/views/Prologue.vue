@@ -1,6 +1,6 @@
 <template>
-    <div class="container-md center">
-        <div class="row header-line">
+    <div class="container-md">
+        <div class="row header-line center">
             <div class="col">
                 <div>CCBC 11</div>
             </div>
@@ -10,7 +10,7 @@
                 <div v-html="prologueHtml"></div>
             </div>
         </div>
-        <div class="row header-line">
+        <div class="row header-line center">
             <div class="col">
                 <button class="btn btn-primary" @click="goNext">去警察局 →</button>
             </div>

@@ -1,6 +1,6 @@
 <template>
-    <div class="container-md center">
-        <div class="row header-line">
+    <div class="container-md">
+        <div class="row header-line center">
             <div class="col">
                 <div>CCBC 11</div>
             </div>
@@ -10,7 +10,7 @@
                 <div id="pHtmlContainer" v-html="prologueHtml"></div>
             </div>
         </div>
-        <div class="row header-line">
+        <div class="row header-line center">
             <div class="col">
                 <a class="btn btn-primary" href="https://ccbc11.cipherpuzzles.com">返回CCBC 11主页</a>
             </div>
@@ -29,6 +29,7 @@ import marked from "marked"
 const router = useRouter();
 
 const prologueHtml = ref("");
+const rankTemp = ref(0);
 
 onMounted(async () => {
     if (!isLogin()) {
@@ -45,13 +46,14 @@ async function reloadCorridorHtml() {
     let data = await res.json();
 
     if (data['status'] == 1) {
+        rankTemp.value = data.rank_temp;
         let html = marked(data.desc);
         prologueHtml.value = html.replace(/<script.*?>([\s\S]+?)<\/script>/, (_, js) => {
             nextTick(() => {
-                var htmlContainer = document.getElementById("pHtmlContainer");
-                var ele = document.createElement("script");
-                ele.innerHTML = js;
-                htmlContainer.appendChild(ele);
+                let rankfunction = eval(js);
+                let extraText = rankfunction(rankTemp.value) || "";
+
+                prologueHtml.value += marked(extraText);
             });
             return "";
         });
