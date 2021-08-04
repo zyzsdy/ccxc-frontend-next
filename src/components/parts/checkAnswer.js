@@ -2,7 +2,7 @@ import { ref } from '@vue/reactivity';
 import gConst from '../../globalconst';
 import { fetchPostWithSign, defaultApiErrorAction } from '../../utils/FetchPost';
 
-export default function useCheckAnswer(cooldownRemainSeconds, showCooldownToast) {
+export default function useCheckAnswer(cooldownRemainSeconds, showCooldownToast, router) {
     const answer = ref("");
 
     const sendAnswer = async (pid) => {

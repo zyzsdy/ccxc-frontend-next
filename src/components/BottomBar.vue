@@ -243,7 +243,7 @@ const { answerTips, tipsCoin, showTip, unlockTip, reloadTip } = useTipsPart();
 const { cooldownRemainSeconds, showCooldownToast, startCountdown } = useCooldownToast();
 const { skipPrologue, checkSkipSwitcher, goPrologue, goCorridor, goAnalysisRoom, goCommOffice }  = useJumpHelper(router);
 const { answerHistory, showAnswerHistory } = useAnswerHistory();
-const { answer, sendAnswer } = useCheckAnswer(cooldownRemainSeconds, showCooldownToast);
+const { answer, sendAnswer } = useCheckAnswer(cooldownRemainSeconds, showCooldownToast, router);
 const { unreadAnnouncement, unreadMessage, mailList, mailInfo, sendHeartbeat, showInbox, resetMail, reloadMail, sendMail } = useMessage();
 
 //onCreated

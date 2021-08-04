@@ -21,6 +21,8 @@ export default function useMessage() {
     });
 
     const sendHeartbeat = async () => {
+        await sleep(2000);
+
         while (true) {
             if (isLogin()) {
                 let api = gConst.apiRoot + "/heartbeat-puzzle";
