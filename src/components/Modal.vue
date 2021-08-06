@@ -62,8 +62,9 @@ gConst.globalBus.on("redirect-location", (data) => {
   title.value = "消息";
   bgType.value = "bg-info";
 
-  router.push(data.location);
+  //router.push(data.location);
   showModal();
+  location.href = data.location;
 });
 
 gConst.globalBus.on("log-out", (data) => {
